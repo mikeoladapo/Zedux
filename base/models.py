@@ -25,7 +25,7 @@ class CustomUser(AbstractUser):
     bio = models.TextField()
     role = models.CharField(max_length=100 , choices=[("student","STUDENT"),("instructor","INSTRUCTOR")])
     joined_at = models.DateTimeField(auto_now_add=True)
-    picture = models.ImageField(upload_to="picture",blank=True,null=True) 
+    profile_picture = models.ImageField(upload_to="profile_picture",blank=True,null=True) 
     groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True)
 
@@ -50,9 +50,9 @@ class Category (models.Model):
         return self.name
 
 class CourseMaterial(models.Model):
-    text_file = models.FileField(upload_to="course_text")
-    video_file = models.FileField(upload_to="course_video")
-    certificate = models.FileField(upload_to="course_certificate")
+    text_file = models.FileField(upload_to="course_text",blank=True,null=True)
+    video_file = models.FileField(upload_to="course_video",blank=True,null=True)
+    certificate = models.FileField(upload_to="course_certificate",blank=True,null=True)
 
 class Course(models.Model):
     name = models.CharField(max_length=100)

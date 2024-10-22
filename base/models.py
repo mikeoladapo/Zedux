@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser , Group ,Permission
 from django.core.validators import RegexValidator ,MinLengthValidator
 from django.core.exceptions import ValidationError
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password 
      
 class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=100)
@@ -26,6 +26,8 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=100 , choices=[("student","STUDENT"),("instructor","INSTRUCTOR")])
     joined_at = models.DateTimeField(auto_now_add=True)
     picture = models.ImageField(upload_to="picture",blank=True,null=True) 
+    groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True)
 
 
     def save(self,*args,**kwargs):
@@ -72,7 +74,7 @@ class Cart(models.Model):
             total_amount += course.amount
         return total_amount
 
-class MyCourses(models.Model):
+class MyCourse(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     courses = models.ManyToManyField(Course)
     bought_on = models.DateTimeField()

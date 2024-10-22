@@ -1,10 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser , BaseUserManager ,PermissionsMixin
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator ,MinLengthValidator
 from django.core.exceptions import ValidationError
-from django.contrib.auth.hashers import make_password ,check_password
+from django.contrib.auth.hashers import make_password
      
-class CustomUser(AbstractBaseUser,PermissionsMixin):
+class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     #Validating the username using regex
@@ -25,9 +25,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     bio = models.TextField()
     role = models.CharField(max_length=100 , choices=[("student","STUDENT"),("instructor","INSTRUCTOR")])
     joined_at = models.DateTimeField(auto_now_add=True)
-    picture = models.ImageField(upload_to="picture",blank=True,null=True)
-    USERNAME_FIELD = 'username'  # Explicitly set the username field
-    REQUIRED_FIELDS = ['email']  # Required fields besides username 
+    picture = models.ImageField(upload_to="picture",blank=True,null=True) 
 
 
     def save(self,*args,**kwargs):

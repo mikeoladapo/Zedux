@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'base',
     'client',
-    'rest_framework'
+    'rest_framework',
+    'Pillow'
 ]
 
 MIDDLEWARE = [

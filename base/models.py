@@ -41,7 +41,14 @@ class CustomUser(AbstractUser):
 class Instructor(models.Model):
     instructor = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     bio = models.CharField(max_length=300)
-
+    
+    @property
+    def instructor_name(self):
+        return self.instructor.username
+    
+    def __str__(self):
+        return self.instructor.username
+    
 class Category (models.Model):
     name = models.TextField()
     
@@ -62,5 +69,12 @@ class Course(models.Model):
     amount = models.DecimalField(max_digits=10,decimal_places=2)
     course_materials = models.ManyToManyField(CourseMaterial)
 
-
-
+    @property
+    def category_name(self):
+        return self.category.name 
+    @property
+    def instructor_name(self):
+        return self.instructor.username
+    
+    def __str__(self):
+        return self.name

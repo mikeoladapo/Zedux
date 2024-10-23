@@ -29,7 +29,6 @@ class CustomUser(AbstractUser):
     groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True)
 
-
     def save(self,*args,**kwargs):
         if not self.id : # this hashes the password only when the user is been created
             self.password = make_password(self.password)
@@ -65,17 +64,3 @@ class Course(models.Model):
 
 
 
-class Cart(models.Model):
-    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    courses = models.ManyToManyField(Course)
-    def get_total_amount(self):
-        total_amount = 0
-        for course in self.courses.all():
-            total_amount += course.amount
-        return total_amount
-
-class MyCourse(models.Model):
-    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    courses = models.ManyToManyField(Course)
-    bought_on = models.DateTimeField()
-    status = models.CharField(max_length=15,choices=[("completed","COMPLETED"),("in progress","IN PROGRESS"),("not started","NOT STARTED")])

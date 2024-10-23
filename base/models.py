@@ -30,7 +30,7 @@ class CustomUser(AbstractUser):
     user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True ,null=True)
 
     def save(self,*args,**kwargs):
-        if not self.id : # this hashes the password only when the user is been created
+        if self.id is None: # this hashes the password only when the user is been created
             self.set_password(self.password)
         super().save(*args,**kwargs)
 

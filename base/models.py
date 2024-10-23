@@ -20,7 +20,7 @@ class CustomUser(AbstractUser):
         
     username  = models.CharField(max_length=20 ,validators=[username_validator,validate_username])
 
-    password = models.CharField(max_length=18 ,validators=[MinLengthValidator(8,"password must not be less the 8")])
+    password = models.CharField(max_length=200 ,validators=[MinLengthValidator(8,"password must not be less the 8")])
     email = models.EmailField()
     bio = models.TextField()
     role = models.CharField(max_length=100 , choices=[("student","STUDENT"),("instructor","INSTRUCTOR")])
@@ -31,7 +31,7 @@ class CustomUser(AbstractUser):
 
     def save(self,*args,**kwargs):
         if not self.id : # this hashes the password only when the user is been created
-            self.password = make_password(self.password)
+            self.set_password(self.password)
         super().save(*args,**kwargs)
 
     def __str__(self):
@@ -56,9 +56,12 @@ class Category (models.Model):
         return self.name
 
 class CourseMaterial(models.Model):
-    text_file = models.FileField(upload_to="course_text",blank=True,null=True)
+    others_file = models.FileField(upload_to="course_others",blank=True,null=True)
     video_file = models.FileField(upload_to="course_video",blank=True,null=True)
     certificate = models.FileField(upload_to="course_certificate",blank=True,null=True)
+
+    def __str__(self):
+        return f"Course Material - {self.id}"
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
@@ -67,7 +70,7 @@ class Course(models.Model):
     duration = models.DurationField()
     instructor = models.ForeignKey(Instructor,on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10,decimal_places=2)
-    course_materials = models.ForeignKey(CourseMaterial,on_delete=models.CASCADE)
+    course_material = models.ForeignKey(CourseMaterial,on_delete=models.CASCADE)
 
     @property
     def category_name(self):

@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
                 ('duration', models.DurationField()),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.category')),
-                ('course_materials', models.ManyToManyField(to='base.coursematerial')),
+                ('course_materials', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,to='base.coursematerial')),
                 ('instructor', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.instructor')),
             ],
         ),

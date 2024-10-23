@@ -67,7 +67,7 @@ class Course(models.Model):
     duration = models.DurationField()
     instructor = models.ForeignKey(Instructor,on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10,decimal_places=2)
-    course_materials = models.ManyToManyField(CourseMaterial)
+    course_materials = models.ForeignKey(CourseMaterial,on_delete=models.CASCADE)
 
     @property
     def category_name(self):

@@ -26,8 +26,8 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=100 , choices=[("student","STUDENT"),("instructor","INSTRUCTOR")])
     joined_at = models.DateTimeField(auto_now_add=True)
     profile_picture = models.ImageField(upload_to="profile_picture",blank=True,null=True) 
-    groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
-    user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True)
+    groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True , null=True)
+    user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True ,null=True)
 
     def save(self,*args,**kwargs):
         if not self.id : # this hashes the password only when the user is been created
@@ -77,4 +77,4 @@ class Course(models.Model):
         return self.instructor.username
     
     def __str__(self):
-        return self.name
+        return self.name 

@@ -9,8 +9,8 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=100)
     #Validating the username using regex
     username_validator = RegexValidator(
-        regex = r'^[a-zA-Z0-9_]+$',
-        message = "username must contain letters , numbers and underscores only",
+        regex = r'^[a-zA-Z0-9_@#]+$',
+        message = "username must contain letters , numbers and underscores,@,and # only",
         code = "Invalid username"
 )
     # username validator logic 
@@ -20,7 +20,13 @@ class CustomUser(AbstractUser):
         
     username  = models.CharField(max_length=20 ,validators=[username_validator,validate_username])
 
-    password = models.CharField(max_length=200 ,validators=[MinLengthValidator(8,"password must not be less the 8")])
+    password_validator = RegexValidator(
+        regex=r'^[a-zA-Z0-9_@#]+$',
+        message="password must contain letters , numbers and at least underscore,@,and # only",
+        code = "The password is not strong enough"
+    )
+
+    password = models.CharField(max_length=200 ,validators=[MinLengthValidator(8,"password must not be less the 8"),password_validator])
     email = models.EmailField()
     bio = models.TextField()
     role = models.CharField(max_length=100 , choices=[("student","STUDENT"),("instructor","INSTRUCTOR")])
@@ -56,9 +62,9 @@ class Category (models.Model):
         return self.name
 
 class CourseMaterial(models.Model):
-    others_file = models.FileField(upload_to="course_others",blank=True,null=True)
     video_file = models.FileField(upload_to="course_video",blank=True,null=True)
     certificate = models.FileField(upload_to="course_certificate",blank=True,null=True)
+    other_file = models.FileField(upload_to="course_others",blank=True,null=True)
 
     def __str__(self):
         return f"Course Material - {self.id}"

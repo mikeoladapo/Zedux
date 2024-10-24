@@ -1,3 +1,7 @@
 from django.shortcuts import render
+from .models import CustomUser,Instructor,Category,Course,CourseMaterial
+from .serializers import CustomUserSerializer ,InstructorSerializer,CategorySerializer,CourseSerializer,CourseMaterialSerializer
+from rest_framework import viewsets
 
-# Create your views here.
+class CustomUserViewset(viewsets.ViewSet):
+    def list ()

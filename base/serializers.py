@@ -45,7 +45,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class CourseMaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseMaterial
-        fields = ['text_file', 'video_file']
+        fields = ['id','text_file', 'video_file','other_file']
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:

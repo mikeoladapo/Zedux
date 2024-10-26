@@ -12,8 +12,20 @@ class CustomUserViewset(viewsets.ViewSet):
         return Response(serializer.data)
     
     def retrieve(self,request,pk):
-        queryset = CustomUser.objects.get(pk=pk)
+        queryset = CustomUser.objects.all()
         user = get_object_or_404(queryset,pk=pk)
         serializer = CustomUserSerializer(user,many=False)
+        return Response(serializer.data)
+    
+class InstructorViewset(viewsets.ViewSet):
+    def list(self,request):
+        queryset = Instructor.objects.all()
+        serializer = InstructorSerializer(queryset,many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self,request,pk):
+        queryset = Instructor.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        serializer = InstructorSerializer(user,many=False)
         return Response(serializer.data)
         

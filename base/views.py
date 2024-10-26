@@ -28,4 +28,39 @@ class InstructorViewset(viewsets.ViewSet):
         user = get_object_or_404(queryset,pk=pk)
         serializer = InstructorSerializer(user,many=False)
         return Response(serializer.data)
-        
+
+class CategoryViewset(viewsets.ViewSet):
+    def list(self,request):
+        queryset = Category.objects.all()
+        serializer = CategorySerializer(queryset,many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self,request,pk):
+        queryset = Category.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        serializer = CategorySerializer(user,many=False)
+        return Response(serializer.data)
+    
+class CourseViewset(viewsets.ViewSet):
+    def list(self,request):
+        queryset = Course.objects.all()
+        serializer = CourseSerializer(queryset,many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self,request,pk):
+        queryset = Course.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        serializer = CourseSerializer(user,many=False)
+        return Response(serializer.data)
+
+class CourseMaterialViewset(viewsets.ViewSet):
+    def list(self,request):
+        queryset = CourseMaterial.objects.all()
+        serializer =CourseMaterialSerializer(queryset,many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self,request,pk):
+        queryset = CourseMaterial.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        serializer = CourseMaterialSerializer(user,many=False)
+        return Response(serializer.data)

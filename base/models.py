@@ -65,6 +65,7 @@ class CourseMaterial(models.Model):
     video_file = models.FileField(upload_to="course_video",blank=True,null=True)
     certificate = models.FileField(upload_to="course_certificate",blank=True,null=True)
     other_file = models.FileField(upload_to="course_others",blank=True,null=True)
+    text_file = models.TextField(blank=True,null=True)
 
     def __str__(self):
         return f"Course Material - {self.id}"

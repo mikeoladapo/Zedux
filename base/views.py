@@ -16,7 +16,29 @@ class CustomUserViewset(viewsets.ViewSet):
         user = get_object_or_404(queryset,pk=pk)
         serializer = CustomUserSerializer(user,many=False)
         return Response(serializer.data)
+
+    def create(self,request):
+        serializer = CustomUserSerializer(data=request.data,many=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
+    def update(self,request,pk):
+        queryset = CustomUser.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        serializer = CustomUserSerializer(user,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self,request,pk):
+        queryset = CustomUser.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 class InstructorViewset(viewsets.ViewSet):
     def list(self,request):
         queryset = Instructor.objects.all()
@@ -28,6 +50,29 @@ class InstructorViewset(viewsets.ViewSet):
         user = get_object_or_404(queryset,pk=pk)
         serializer = InstructorSerializer(user,many=False)
         return Response(serializer.data)
+    
+    def create(self,request):
+        serializer = InstructorSerializer(data=request.data,many=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self,request,pk):
+        queryset = Instructor.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        serializer = InstructorSerializer(user,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self,request,pk):
+        queryset = Instructor.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CategoryViewset(viewsets.ViewSet):
     def list(self,request):
@@ -41,6 +86,29 @@ class CategoryViewset(viewsets.ViewSet):
         serializer = CategorySerializer(user,many=False)
         return Response(serializer.data)
     
+    def create(self,request):
+        serializer = CategorySerializer(data=request.data,many=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self,request,pk):
+        queryset = Category.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        serializer = CategorySerializer(user,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self,request,pk):
+        queryset = Category.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    
 class CourseViewset(viewsets.ViewSet):
     def list(self,request):
         queryset = Course.objects.all()
@@ -52,6 +120,29 @@ class CourseViewset(viewsets.ViewSet):
         user = get_object_or_404(queryset,pk=pk)
         serializer = CourseSerializer(user,many=False)
         return Response(serializer.data)
+    
+    def create(self,request):
+        serializer = CourseSerializer(data=request.data,many=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self,request,pk):
+        queryset = Course.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        serializer = CourseSerializer(user,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self,request,pk):
+        queryset = Course.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CourseMaterialViewset(viewsets.ViewSet):
     def list(self,request):
@@ -64,3 +155,25 @@ class CourseMaterialViewset(viewsets.ViewSet):
         user = get_object_or_404(queryset,pk=pk)
         serializer = CourseMaterialSerializer(user,many=False)
         return Response(serializer.data)
+    
+    def create(self,request):
+        serializer = CourseMaterialSerializer(data=request.data,many=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self,request,pk):
+        queryset = CourseMaterial.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        serializer = CourseMaterialSerializer(user,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self,request,pk):
+        queryset = CourseMaterial.objects.all()
+        user = get_object_or_404(queryset,pk=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

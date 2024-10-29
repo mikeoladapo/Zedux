@@ -26,7 +26,7 @@ class MyCartViewSet(viewsets.ViewSet):
         except MyCart.DoesNotExist:
             return Response({'error': 'Not found'},status=status.HTTP_404_NOT_FOUND)
         
-    @action(detail=False,methods=['post'])  
+    @action(detail=False,methods=['post'],url_path='add-to-cart/(?P<course_id>[^/.]+)')  
     def add_to_cart(self,request,course_id):
         try:
             course = Course.objects.get(pk=course_id)
@@ -41,7 +41,7 @@ class MyCartViewSet(viewsets.ViewSet):
 class MyCourseViewSet(viewsets.ViewSet):
     def list(self,request):
         queryset = MyCourse.objects.filter(user=request.user)
-        serializer = MyCourseSerializer(queryset)
+        serializer = MyCourseSerializer(queryset,many=True)
         return Response(serializer.data)
     def retrieve(self,request,pk):
         try:
@@ -59,8 +59,8 @@ class MyCourseViewSet(viewsets.ViewSet):
         except MyCourse.DoesNotExist:
             return Response({'error': 'Not found'},status=status.HTTP_404_NOT_FOUND)
         
-    @action(detail=False,methods=['post']) 
-    def add_to_mycourse(self,request,course_id):
+    @action(detail=False,methods=['post'])
+    def add_to_my_course(self,request,course_id):
         try:
             course = Course.objects.get(pk=course_id)
         except Course.DoesNotExist:

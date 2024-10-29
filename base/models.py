@@ -18,7 +18,7 @@ class CustomUser(AbstractUser):
         if len(value) < 8 :
             raise ValidationError("username must not be less than 8 digits")
         
-    username  = models.CharField(max_length=20 ,validators=[username_validator,validate_username])
+    username  = models.CharField(max_length=20 ,unique=True,validators=[username_validator,validate_username])
 
     password_validator = RegexValidator(
         regex=r'^[a-zA-Z0-9_@#]+$',

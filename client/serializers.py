@@ -4,9 +4,9 @@ from .models import MyCart , MyCourse
 class MyCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyCart
-        fields = ['id', 'user', 'courses']
+        fields = ['id', 'user', 'course_name']
 
 class MyCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyCourse
-        fields = ['id', 'user', 'courses', 'bought_on', 'status']
+        fields = ['id', 'user', 'course_name', 'bought_on']

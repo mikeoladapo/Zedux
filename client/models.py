@@ -16,8 +16,7 @@ class MyCourse(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     course = models.ForeignKey(Course,on_delete=models.CASCADE)
     bought_on = models.DateTimeField()
-    status = models.CharField(max_length=15,choices=[("completed","COMPLETED"),("in progress","IN PROGRESS"),("not started","NOT STARTED")])
-
+    
     @property
     def user_name(self):
         return self.user.username

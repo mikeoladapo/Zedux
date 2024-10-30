@@ -1,4 +1,5 @@
 from rest_framework import viewsets,status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from base.models import Course
@@ -80,3 +81,4 @@ class MyProfileViewSet(viewsets.ViewSet):
         queryset = get_object_or_404(CustomUser, username=request.user.username)
         serializer = MyProfileSerializer(queryset)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    

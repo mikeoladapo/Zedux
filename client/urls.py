@@ -9,7 +9,7 @@ router.register(r'',MyProfileViewSet,basename='my-profile')
 
 custom_urls = [
     path('my-courses/add/<int:course_id>/', MyCourseViewSet.as_view({'post': 'add_to_my_courses'}), name='add-to-my-courses'),
-    path('my-cart/add/<int:course_id>/', MyCartViewSet.as_view({'post': 'add_to_cart'}), name='add-to-cart')
+    path('my-cart/add/<int:course_id>/', MyCartViewSet.as_view({'post': 'add_to_cart'}), name='add-to-cart'),
 ]
 urlpatterns = [
     path('',include(router.urls)),

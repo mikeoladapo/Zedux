@@ -5,9 +5,11 @@ from rest_framework.decorators import action
 from base.models import Course
 from .models import MyCart,MyCourse
 from .serializers import MyCartSerializer,MyCourseSerializer,MyProfileSerializer
-from django.utils import timezone
+from django.utils import timezone 
 from base.models import CustomUser
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import AllowAny,IsAuthenticated
+
 
 class MyCartViewSet(viewsets.ViewSet):
     def list(self,request):
@@ -76,9 +78,9 @@ class MyCourseViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 class MyProfileViewSet(viewsets.ViewSet):
-    @action(detail=False,methods=['get'],url_path='my-profile')
-    def my_profile(self, request):
-        queryset = get_object_or_404(CustomUser, username=request.user.username)
-        serializer = MyProfileSerializer(queryset)
+    permission_classes = [IsAuthenticated] 
+
+    def retrieve(self, request):
+        user = request.user
+        serializer = MyProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    

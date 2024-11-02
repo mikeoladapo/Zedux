@@ -1,12 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser,BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator 
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.db import models
 
-class CustomUserManager(BaseUserManager):
+class CustomUserManager(BaseUserManager,PermissionsMixin):
     def create_user(self,username,email,password=None,**extra_fields):
         if not username:
             raise ValueError('The username must be set')

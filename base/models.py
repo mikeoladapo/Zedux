@@ -1,9 +1,7 @@
-from typing import Any
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group ,Permission,AbstractBaseUser,BaseUserManager
-from django.core.validators import RegexValidator ,MinLengthValidator
+from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
+from django.core.validators import RegexValidator 
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -44,8 +42,8 @@ class CustomUser(AbstractBaseUser):
         validators=[username_validator, validate_username]
     )
 
-    email = models.EmailField(unique=True)  # Ensure unique emails
-    bio = models.TextField(blank=True, null=True)  # Make bio optional
+    email = models.EmailField(unique=True)  # same email cant be used multiple times 
+    bio = models.TextField(blank=True, null=True)  
     role = models.CharField(max_length=100, choices=[("student", "STUDENT"), ("instructor", "INSTRUCTOR")])
     joined_at = models.DateTimeField(auto_now_add=True)
     profile_picture = models.ImageField(upload_to="profile_picture", blank=True, null=True)

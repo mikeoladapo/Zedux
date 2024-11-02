@@ -4,9 +4,9 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.utils import timezone
 
-class CustomUserManager(BaseUserManager,PermissionsMixin):
+class CustomUserManager(BaseUserManager):
     def create_user(self,username,email,password=None,**extra_fields):
         if not username:
             raise ValueError('The username must be set')
@@ -14,6 +14,7 @@ class CustomUserManager(BaseUserManager,PermissionsMixin):
             raise ValueError('The password must be set')
         if not email:
             raise ValueError('The email address must be set')
+        email = self.normalize_email(email)
         user = self.model(username=username,email=email,**extra_fields)
         user.set_password(password)
         user.save()
@@ -23,7 +24,7 @@ class CustomUserManager(BaseUserManager,PermissionsMixin):
         extra_fields.setdefault('is_superuser',True)
         return self.create_user(username,email,password,**extra_fields)
 
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser,PermissionsMixin):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
@@ -47,7 +48,7 @@ class CustomUser(AbstractBaseUser):
     email = models.EmailField(unique=True)  # same email cant be used multiple times 
     bio = models.TextField(blank=True, null=True)  
     role = models.CharField(max_length=100, choices=[("student", "STUDENT"), ("instructor", "INSTRUCTOR")])
-    joined_at = models.DateTimeField(auto_now_add=True)
+    date_joined = models.DateTimeField(default=timezone.now())
     profile_picture = models.ImageField(upload_to="profile_picture", blank=True, null=True)
 
     is_active = models.BooleanField(default=True)  # Required fields

@@ -1,21 +1,15 @@
 from rest_framework import serializers
-from django.contrib.auth.hashers import make_password
 from .models import CustomUser, Instructor, Course, Category, CourseMaterial
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id','username', 'profile_picture', 'first_name', 'last_name', 'email', 'bio', 'role', 'joined_at']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'bio', 'role', 'profile_picture', 'is_active', 'is_staff']
+        read_only_fields = ['id', 'is_active', 'is_staff']
 
     def create(self, validated_data):
-        user = CustomUser(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-        )
-        user.set_password(validated_data['password']) 
+        user = CustomUser(**validated_data)
+        user.set_password(validated_data['password'])  # Hash the password
         user.save()
         return user
     def update(self,instance,validated_data):

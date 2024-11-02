@@ -1,43 +1,62 @@
+from typing import Any
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group ,Permission
+from django.contrib.auth.models import AbstractUser, Group ,Permission,AbstractBaseUser,BaseUserManager
 from django.core.validators import RegexValidator ,MinLengthValidator
 from django.core.exceptions import ValidationError
-     
-class CustomUser(AbstractUser):
+from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
+from django.db import models
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self,username,password=None,**extra_fields):
+        if not username:
+            raise ValueError('The username must be set')
+        if not password:
+            raise ValueError('The password must be set')
+        user = self.model(username=username,**extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user 
+    def create_super_user(self,username,password=None,**extra_fields):
+        extra_fields.setdefault('is_staff',True)
+        extra_fields.setdefault('is_superuser',True)
+        return self.create_user(username,password,**extra_fields)
+
+class CustomUser(AbstractBaseUser):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    #Validating the username using regex
-    username_validator = RegexValidator(
-        regex = r'^[a-zA-Z0-9_@#]+$',
-        message = "username must contain letters , numbers and underscores,@,and # only",
-        code = "Invalid username"
-)
-    # username validator logic 
-    def validate_username(value):
-        if len(value) < 8 :
-            raise ValidationError("username must not be less than 8 digits")
-        
-    username  = models.CharField(max_length=20 ,unique=True,validators=[username_validator,validate_username])
 
-    password_validator = RegexValidator(
+    # Username validator logic
+    username_validator = RegexValidator(
         regex=r'^[a-zA-Z0-9_@#]+$',
-        message="password must contain letters , numbers and at least underscore,@,and # only",
-        code = "The password is not strong enough"
+        message="Username must contain letters, numbers, and underscores, @, and # only.",
+        code="invalid_username"
     )
 
-    password = models.CharField(max_length=200 ,validators=[MinLengthValidator(8,"password must not be less the 8"),password_validator])
-    email = models.EmailField()
-    bio = models.TextField()
-    role = models.CharField(max_length=100 , choices=[("student","STUDENT"),("instructor","INSTRUCTOR")])
-    joined_at = models.DateTimeField(auto_now_add=True)
-    profile_picture = models.ImageField(upload_to="profile_picture",blank=True,null=True) 
-    groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True , null=True)
-    user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True ,null=True)
+    def validate_username(value):
+        if len(value) < 8:
+            raise ValidationError("Username must not be less than 8 characters.")
 
-    def save(self,*args,**kwargs):
-        if self.id is None: # this hashes the password only when the user is been created
-            self.set_password(self.password)
-        super().save(*args,**kwargs)
+    username = models.CharField(
+        max_length=20,
+        unique=True,
+        validators=[username_validator, validate_username]
+    )
+
+    email = models.EmailField(unique=True)  # Ensure unique emails
+    bio = models.TextField(blank=True, null=True)  # Make bio optional
+    role = models.CharField(max_length=100, choices=[("student", "STUDENT"), ("instructor", "INSTRUCTOR")])
+    joined_at = models.DateTimeField(auto_now_add=True)
+    profile_picture = models.ImageField(upload_to="profile_picture", blank=True, null=True)
+
+    is_active = models.BooleanField(default=True)  # Required fields
+    is_staff = models.BooleanField(default=False)  # Required for admin access
+
+    objects = CustomUserManager()  # Assign the custom user manager
+
+    USERNAME_FIELD = 'username'  # Required field
+    REQUIRED_FIELDS = ['email']  # Other required fields
 
     def __str__(self):
         return self.username

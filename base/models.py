@@ -7,19 +7,21 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self,username,password=None,**extra_fields):
+    def create_user(self,username,email,password=None,**extra_fields):
         if not username:
             raise ValueError('The username must be set')
         if not password:
             raise ValueError('The password must be set')
-        user = self.model(username=username,**extra_fields)
+        if not email:
+            raise ValueError('The email address must be set')
+        user = self.model(username=username,email=email,**extra_fields)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
         return user 
-    def create_super_user(self,username,password=None,**extra_fields):
+    def create_super_user(self,username,email,password=None,**extra_fields):
         extra_fields.setdefault('is_staff',True)
         extra_fields.setdefault('is_superuser',True)
-        return self.create_user(username,password,**extra_fields)
+        return self.create_user(username,email,password,**extra_fields)
 
 class CustomUser(AbstractBaseUser):
     first_name = models.CharField(max_length=100)

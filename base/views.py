@@ -4,8 +4,10 @@ from rest_framework import status
 from .models import CustomUser,Instructor,Category,Course,CourseMaterial
 from .serializers import CustomUserSerializer ,InstructorSerializer,CategorySerializer,CourseSerializer,CourseMaterialSerializer
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 class CustomUserViewset(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
     def list(self,request):
         queryset = CustomUser.objects.all()
         serializer = CustomUserSerializer(queryset,many=True)
@@ -104,7 +106,7 @@ class CategoryViewset(viewsets.ViewSet):
     
     def destroy(self,request,pk):
         queryset = Category.objects.all()
-        user = get_object_or_404(queryset,pk=pk)
+        user = get_object_or_404(queryset,pk=pk)   
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

@@ -22,6 +22,7 @@ class CustomUserManager(BaseUserManager):
     def create_super_user(self,username,email,password=None,**extra_fields):
         extra_fields.setdefault('is_staff',True)
         extra_fields.setdefault('is_superuser',True)
+        extra_fields.setdefault('instructor',("student", "STUDENT"))
         return self.create_user(username,email,password,**extra_fields)
 
 class CustomUser(AbstractBaseUser,PermissionsMixin):
@@ -47,7 +48,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
 
     email = models.EmailField(unique=True)  # same email cant be used multiple times 
     bio = models.TextField(blank=True, null=True)  
-    role = models.CharField(max_length=100, choices=[("student", "STUDENT"), ("instructor", "INSTRUCTOR")])
+    role = models.CharField(max_length=100, choices=[("student", "STUDENT"), ("instructor", "INSTRUCTOR")],default=("student", "STUDENT"))
     date_joined = models.DateTimeField(default=timezone.now())
     profile_picture = models.ImageField(upload_to="profile_picture", blank=True, null=True)
 

@@ -77,10 +77,3 @@ class MyCourseViewSet(viewsets.ViewSet):
         serializer = MyCourseSerializer(new_course)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-class MyProfileViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated] 
-
-    def retrieve(self, request):
-        user = request.user
-        serializer = MyProfileSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -58,7 +58,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     objects = CustomUserManager()  # Assign the custom user manager
 
     USERNAME_FIELD = 'username'  # Required field
-    REQUIRED_FIELDS = ['email']  # Other required fields
+    REQUIRED_FIELDS = ['email','first_name','last_name','profile_picture']  # Other required fields
 
     def __str__(self):
         return self.username

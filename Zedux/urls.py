@@ -25,7 +25,7 @@ urlpatterns = [
     path('api/',include('base.urls')),
     path('api/',include('client.urls')),
     path('auth/',include('djoser.urls')),
-    path('auth/',include('djoser.urls.jwt')),
+    #path('auth/',include('djoser.urls.jwt')),
     #path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     #path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
 ]+static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)

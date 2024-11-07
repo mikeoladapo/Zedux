@@ -132,22 +132,24 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
+#REST_FRAMEWORK = {
+   # 'DEFAULT_AUTHENTICATION_CLASSES': (
+  #      'rest_framework_simplejwt.authentication.JWTAuthentication',
+ #   ),
+#}
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-   'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-}
+#SIMPLE_JWT = {
+ #   'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+  #  'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+   #'ROTATE_REFRESH_TOKENS': True,
+    #'BLACKLIST_AFTER_ROTATION': True,
+#}
 
 DJOSER = {
     'SERIALIZERS': {
         'user': 'base.serializers.CustomUserSerializer',         
         'current_user': 'base.serializers.CustomUserSerializer',
     },
+    'USER_CREATE_PASSWORD_RETYPE': True,
 }
+USERNAME_RESET_CONFIRM_URL = "/auth/users/confirm_reset_username/" 

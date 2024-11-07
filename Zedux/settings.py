@@ -153,3 +153,13 @@ DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
 }
 USERNAME_RESET_CONFIRM_URL = "/auth/users/confirm_reset_username/" 
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # e.g., smtp.gmail.com for Gmail
+EMAIL_PORT = 587  # For most providers, 587 is used for TLS, 465 for SSL
+EMAIL_USE_TLS = True  # Enable TLS encryption (recommended if available)
+EMAIL_USE_SSL = False  # Leave this False if using TLS
+EMAIL_HOST_USER = ''  # Your email address
+EMAIL_HOST_PASSWORD = ''  # Your email password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # The default from email for your application

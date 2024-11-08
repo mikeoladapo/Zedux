@@ -4,10 +4,11 @@ from rest_framework import status
 from .models import CustomUser,Instructor,Category,Course,CourseMaterial
 from .serializers import CustomUserSerializer ,InstructorSerializer,CategorySerializer,CourseSerializer,CourseMaterialSerializer
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from .permissions import IsInstructor
 
 class CustomUserViewset(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
     def list(self,request):
         queryset = CustomUser.objects.all()
         serializer = CustomUserSerializer(queryset,many=True)
@@ -42,6 +43,15 @@ class CustomUserViewset(viewsets.ViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class InstructorViewset(viewsets.ViewSet):
+    def get_permissions(self):
+        if self.action == "create":
+            permission_classes = [IsAdminUser]
+        elif self.action == "update":
+            permission_classes = [IsAdminUser]
+        elif self.action == "destroy":
+            permission_classes = [IsAdminUser]
+        else:
+            permission_classes = [IsAuthenticated]
     def list(self,request):
         queryset = Instructor.objects.all()
         serializer = InstructorSerializer(queryset,many=True)

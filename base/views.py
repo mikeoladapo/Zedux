@@ -51,7 +51,8 @@ class InstructorViewset(viewsets.ViewSet):
         elif self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
-            permission_classes = [IsAuthenticated]
+           permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
     def list(self,request):
         queryset = Instructor.objects.all()
         serializer = InstructorSerializer(queryset,many=True)

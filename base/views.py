@@ -5,7 +5,7 @@ from .models import CustomUser,Instructor,Category,Course,CourseMaterial
 from .serializers import CustomUserSerializer ,InstructorSerializer,CategorySerializer,CourseSerializer,CourseMaterialSerializer
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
-from .permissions import IsInstructor
+from .permissions import IsInstructor,IsCourseOwner
 
 class CustomUserViewset(viewsets.ViewSet):
     permission_classes = [IsAdminUser]
@@ -135,11 +135,11 @@ class CategoryViewset(viewsets.ViewSet):
 class CourseViewset(viewsets.ViewSet):
     def get_permissions(self):
         if self.action=="create":
-            permission_classes = [IsAdminUser]
-        elif self.action == "update":
             permission_classes = [IsAuthenticated,IsAdminUser|IsInstructor]
+        elif self.action == "update":
+            permission_classes = [IsAuthenticated,IsCourseOwner]
         elif self.action == "destroy":
-            permission_classes = [IsAdminUser]
+            permission_classes = [IsAuthenticated,IsAdminUser|IsCourseOwner]
         else:
            permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
@@ -178,6 +178,16 @@ class CourseViewset(viewsets.ViewSet):
 
 
 class CourseMaterialViewset(viewsets.ViewSet):
+    def get_permissions(self):
+        if self.action=="create":
+            permission_classes = [IsAuthenticated,IsAdminUser|IsCourseOwner]
+        elif self.action == "update":
+            permission_classes = [IsAuthenticated,IsAdminUser|IsCourseOwner]
+        elif self.action == "destroy":
+            permission_classes = [IsAuthenticated,IsAdminUser|IsCourseOwner]
+        else:
+           permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
     def list(self,request):
         queryset = CourseMaterial.objects.all()
         serializer =CourseMaterialSerializer(queryset,many=True)

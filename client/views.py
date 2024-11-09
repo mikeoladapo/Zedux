@@ -8,10 +8,12 @@ from .serializers import MyCartSerializer,MyCourseSerializer,MyProfileSerializer
 from django.utils import timezone 
 from base.models import CustomUser
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsOwner
 
 
 class MyCartViewSet(viewsets.ViewSet):
+    permission_classes = [IsOwner]
     def list(self,request):
         queryset = MyCart.objects.filter(user=request.user)
         serializer = MyCartSerializer(queryset)
@@ -45,6 +47,7 @@ class MyCartViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 class MyCourseViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated,IsOwner]
     def list(self,request):
         queryset = MyCourse.objects.filter(user=request.user)
         serializer = MyCourseSerializer(queryset,many=True)

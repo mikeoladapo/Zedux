@@ -19,7 +19,7 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save()
         return user 
-    def create_super_user(self,username,email,password=None,**extra_fields):
+    def create_superuser(self,username,email,password=None,**extra_fields):
         extra_fields.setdefault('is_staff',True)
         extra_fields.setdefault('is_superuser',True)
         extra_fields.setdefault('instructor',("student", "STUDENT"))
@@ -58,7 +58,7 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     objects = CustomUserManager()  # Assign the custom user manager
 
     USERNAME_FIELD = 'username'  # Required field
-    REQUIRED_FIELDS = ['email','first_name','last_name','profile_picture']  # Other required fields
+    REQUIRED_FIELDS = ['email']  # Other required fields
 
     def __str__(self):
         return self.username
@@ -87,6 +87,7 @@ class CourseMaterial(models.Model):
     other_file = models.FileField(upload_to="course_others",blank=True,null=True)
     text_file = models.TextField(blank=True,null=True)
 
+ 
     def __str__(self):
         return f"Course Material - {self.id}"
 

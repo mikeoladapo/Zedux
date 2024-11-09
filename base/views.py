@@ -88,6 +88,16 @@ class InstructorViewset(viewsets.ViewSet):
 
 
 class CategoryViewset(viewsets.ViewSet):
+    def get_permissions(self):
+        if self.action=="create":
+            permission_classes = [IsAdminUser]
+        elif self.action == "update":
+            permission_classes = [IsAdminUser]
+        elif self.action == "destroy":
+            permission_classes = [IsAdminUser]
+        else:
+           permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
     def list(self,request):
         queryset = Category.objects.all()
         serializer = CategorySerializer(queryset,many=True)
@@ -123,6 +133,16 @@ class CategoryViewset(viewsets.ViewSet):
 
     
 class CourseViewset(viewsets.ViewSet):
+    def get_permissions(self):
+        if self.action=="create":
+            permission_classes = [IsAdminUser]
+        elif self.action == "update":
+            permission_classes = [IsAuthenticated,IsAdminUser|IsInstructor]
+        elif self.action == "destroy":
+            permission_classes = [IsAdminUser]
+        else:
+           permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
     def list(self,request):
         queryset = Course.objects.all()
         serializer = CourseSerializer(queryset,many=True)

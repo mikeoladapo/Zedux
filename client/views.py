@@ -13,12 +13,13 @@ from .permissions import IsMyOwner,IsMyCart
 
 
 class MyCartViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated,IsMyOwner] 
+    permission_classes = [IsAuthenticated,IsMyCart] 
 
     def list(self,request):
         queryset = MyCart.objects.filter(user=request.user)
         serializer = MyCartSerializer(queryset)
         return Response(serializer.data)
+    
     def retrieve(self,request,pk):
         try:
             queryset = MyCart.objects.get(pk=pk,user=request.user)

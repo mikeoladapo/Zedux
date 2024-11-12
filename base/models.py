@@ -82,6 +82,8 @@ class Category (models.Model):
         return self.name
 
 class CourseMaterial(models.Model):
+    course_name = models.CharField(max_length=100)
+    instructor = models.ForeignKey(Instructor,on_delete=models.CASCADE)
     video_file = models.FileField(upload_to="course_video",blank=True,null=True)
     certificate = models.FileField(upload_to="course_certificate",blank=True,null=True)
     other_file = models.FileField(upload_to="course_others",blank=True,null=True)

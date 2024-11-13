@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'rest_framework_simplejwt',
+    'cloudinary',
+    'cloudinary_storage'
 ]
 
 MIDDLEWARE = [
@@ -166,3 +168,4 @@ EMAIL_USE_SSL = False  # Leave this False if using TLS
 EMAIL_HOST_USER = ''  # Your email address
 EMAIL_HOST_PASSWORD = ''  # Your email password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # The default from email for your application
+

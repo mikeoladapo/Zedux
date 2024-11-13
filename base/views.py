@@ -6,6 +6,7 @@ from .serializers import CustomUserSerializer ,InstructorSerializer,CategorySeri
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from .permissions import IsInstructor,IsCourseOwner
+import cloudinary.uploader
 
 class CustomUserViewset(viewsets.ViewSet):
     permission_classes = [IsAdminUser]
@@ -20,7 +21,23 @@ class CustomUserViewset(viewsets.ViewSet):
         serializer = CustomUserSerializer(user,many=False)
         return Response(serializer.data)
 
-    def create(self,request):
+    def create(self, request, *args, **kwargs):
+        profile_picture_url = None
+        if "profile_picture" in request.FILES :
+            profile_picture_result = cloudinary.uploader.upload(
+                request.FILES['profile_picture'], resource_type='image'
+            )
+            profile_picture_url = profile_picture_result.get('url')
+        user = CustomUser.objects.create(
+            first_name = request.data.get('first_name'),
+            last_name = request.data.get('last_name'),
+            username = request.data.get('username'),
+            email = request.data.get('email'),
+            bio = request.data.get('bio'),
+            email = request.data.get('email'),
+            email = request.data.get('email')
+
+        )
         serializer = CustomUserSerializer(data=request.data,many=False)
         if serializer.is_valid():
             serializer.save()

@@ -29,19 +29,26 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instructor
-        fields = ['instructor_name', 'bio']
+        fields = ['id','instructor_name', 'bio']
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name']
 
+
 class CourseMaterialSerializer(serializers.ModelSerializer):
+    video_file = serializers.URLField(source='video_file.url', read_only=True)
+    certificate = serializers.URLField(source='certificate.url', read_only=True)
+    other_file = serializers.URLField(source='other_file.url', read_only=True)
     class Meta:
         model = CourseMaterial
-        fields = ['id','text_file', 'video_file','other_file']
+        fields = ['course_name', 'instructor', 'video_file', 'certificate', 'other_file', 'text_file']
+
+
 
 class CourseSerializer(serializers.ModelSerializer):
+    instructor = InstructorSerializer(read_only=True)
     class Meta:
         model = Course
-        fields = ['id', 'name', 'description', 'category_name', 'duration', 'instructor_name', 'amount', 'course_material']
+        fields = ['id', 'name', 'description', 'category_name', 'duration', 'amount', 'course_material','instructor']

@@ -169,3 +169,13 @@ EMAIL_HOST_USER = ''  # Your email address
 EMAIL_HOST_PASSWORD = ''  # Your email password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # The default from email for your application
 
+
+# Configure default file storage to use Cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Cloudinary configuration
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dsbyygfwr',
+    'API_KEY':'293646795868979',
+    'API_SECRET': 'lchsKWBkJksnSSUtJpS4Gf3OBhM',
+}

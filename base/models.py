@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from cloudinary.models import CloudinaryField
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self,username,email,password=None,**extra_fields):
@@ -49,8 +51,8 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     email = models.EmailField(unique=True)  # same email cant be used multiple times 
     bio = models.TextField(blank=True, null=True)  
     role = models.CharField(max_length=100, choices=[("student", "STUDENT"), ("instructor", "INSTRUCTOR")],default=("student", "STUDENT"))
-    date_joined = models.DateTimeField(default=timezone.now())
-    profile_picture = models.ImageField(upload_to="profile_picture", blank=True, null=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    profile_picture = CloudinaryField("profile_picture",resource_type = "image", blank=True, null=True)
 
     is_active = models.BooleanField(default=True)  # Required fields
     is_staff = models.BooleanField(default=False)  # Required for admin access
@@ -84,9 +86,9 @@ class Category (models.Model):
 class CourseMaterial(models.Model):
     course_name = models.CharField(max_length=100)
     instructor = models.ForeignKey(Instructor,on_delete=models.CASCADE)
-    video_file = models.FileField(upload_to="course_video",blank=True,null=True)
-    certificate = models.FileField(upload_to="course_certificate",blank=True,null=True)
-    other_file = models.FileField(upload_to="course_others",blank=True,null=True)
+    video_file = CloudinaryField("course_video",resource_type="video",blank=True,null=True)
+    certificate = CloudinaryField("course_certificate",resource_type="auto",blank=True,null=True)
+    other_file = CloudinaryField("others",resource_type="auto",blank=True,null=True)
     text_file = models.TextField(blank=True,null=True)
 
  

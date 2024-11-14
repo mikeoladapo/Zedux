@@ -7,6 +7,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from .permissions import IsInstructor,IsCourseOwner
 import cloudinary.uploader
+from rest_framework.decorators import action
 
 class CustomUserViewset(viewsets.ViewSet):
     permission_classes = [IsAdminUser]
@@ -112,8 +113,19 @@ class InstructorViewset(viewsets.ViewSet):
         user = get_object_or_404(queryset,pk=pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
+    
+    @action(detail=False,methods=['post'])
+    def become_an_instructor(self,request):
+        if Instructor.objects.filter(instructor=request.user).exists():
+            return Response(
+                {"error": "User is already an instructor"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        new_instructor = Instructor.objects.create(instructor=request.user,
+                                                   bio=getattr(request.user, 'bio', ''))# Use empty string if bio is missing
+        serializer = InstructorSerializer(new_instructor)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    
 class CategoryViewset(viewsets.ViewSet):
     def get_permissions(self):
         if self.action=="create":

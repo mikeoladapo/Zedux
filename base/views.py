@@ -23,7 +23,7 @@ class CustomUserViewset(viewsets.ViewSet):
         custom_user.username = request.data.get('username',custom_user.username)
         custom_user.email = request.data.get('email',custom_user.email)
         custom_user.bio = request.data.get('bio',custom_user.bio)
-        custom_user.role = request.data.get('bio',custom_user.role)
+        custom_user.role = request.data.get('role',custom_user.role)
         custom_user.is_active = request.data.get('is_active',custom_user.is_active)
         custom_user.is_staff = request.data.get('is_staff',custom_user.is_staff)
         return custom_user   
@@ -40,13 +40,13 @@ class CustomUserViewset(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        custom_user = CustomUser()
-        custom_user = self._handle_file_upload(request,custom_user)
-        custom_user.save()
-        serializer = CustomUserSerializer(custom_user,many=False)
+        serializer = CustomUserSerializer(data=request.data,many=False)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
+            custom_user = serializer.save(commit=False)
+            custom_user = self._handle_file_upload(request,custom_user)
+            custom_user.save()
+            saved_serializer = CustomUserSerializer(custom_user)
+            return Response(saved_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def update(self,request,pk):
@@ -54,10 +54,14 @@ class CustomUserViewset(viewsets.ViewSet):
             custom_user = CustomUser.objects.get(pk=pk)
         except CustomUser.DoesNotExist:
             return Response({"error": "Course material not found"}, status=status.HTTP_404_NOT_FOUND)
-        custom_user = self._handle_file_upload(request,custom_user)
-        custom_user.save()
-        serializer = CustomUserSerializer(CustomUser)
-        return (serializer.data , status=status.HTTP_200_OK)
+        serializer = CustomUserSerializer(custom_user,data=request.data,partial=True)
+        if serializer.is_valid():
+            custom_user = self._handle_file_upload(request,custom_user)
+            custom_user.save()
+            saved_serializer = CustomUserSerializer(custom_user)
+            return Response(saved_serializer.data , status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
     def destroy(self,request,pk):
         queryset = CustomUser.objects.all()
         user = get_object_or_404(queryset,pk=pk)

@@ -238,7 +238,7 @@ class CourseMaterialViewset(viewsets.ViewSet):
         course_material.course_name = request.data.get("course_name",course_material.course_name)
         course_material.instructor = request.data.get("instructor",course_material.instructor)
         course_material.text_file = request.data.get("text_file",course_material.text_file)
-
+        return course_material
 
     def list(self,request):
         queryset = CourseMaterial.objects.all()
@@ -268,9 +268,10 @@ class CourseMaterialViewset(viewsets.ViewSet):
             return Response({"error": "Course material not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = CourseMaterialSerializer(course_material,data=request.data)
         if serializer.is_valid():
-            course_material = serializer.save(commit)
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_200_OK)
+            course_material = serializer.save(commit=False)
+            course_material = self._handle_file_upload(request,course_material)
+            saved_serializer = CourseMaterialSerializer(course_material)
+            return Response(saved_serializer.data,status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def destroy(self,request,pk):

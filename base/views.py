@@ -13,10 +13,10 @@ class CustomUserViewset(viewsets.ViewSet):
 
     def _handle_file_upload(self,request,custom_user=None):
         if "profile_picture" in request.FILES :
-            profile_picture_result = cloudinary.uploader.upload(
+            profile_picture_upload = cloudinary.uploader.upload(
                 request.FILES["profile_picture"],resource_type="image"
             )
-            profile_picture_url = profile_picture_result.get('url')
+            profile_picture_url = profile_picture_upload.get('url')
             custom_user.profile_picture = profile_picture_url
         custom_user.first_name = request.data.get('first_name',custom_user.first_name)
         custom_user.last_name = request.data.get('last_name',custom_user.last_name)
@@ -214,6 +214,32 @@ class CourseMaterialViewset(viewsets.ViewSet):
         else:
            permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
+    
+    def _handle_file_upload(self,request,course_material=None):
+        if "video_file" in request.FILES:
+            video_file_upload = cloudinary.uploader.upload(
+                request.FILES["video_file"],resource_type ="video"
+            )
+            video_file_url = video_file_upload.get("url")
+            course_material.video_file = video_file_url
+        if "other_file" in request.FILES:
+            other_file_upload = cloudinary.uploader.upload(
+                request.FILES["other_file"],resource_type ="auto"
+            )
+            other_file_url = other_file_upload.get("url")
+            course_material.other_file = other_file_url
+        if "certificate" in request.FILES:
+            certificate_upload = cloudinary.uploader.upload(
+                request.FILES["certificate"],resource_type ="auto"
+            )
+            certificate_url = certificate_upload.get("url")
+            course_material.certificate = certificate_url
+
+        course_material.course_name = request.data.get("course_name",course_material.course_name)
+        course_material.instructor = request.data.get("instructor",course_material.instructor)
+        course_material.text_file = request.data.get("text_file",course_material.text_file)
+
+
     def list(self,request):
         queryset = CourseMaterial.objects.all()
         serializer =CourseMaterialSerializer(queryset,many=True)

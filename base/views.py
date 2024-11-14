@@ -54,8 +54,9 @@ class CustomUserViewset(viewsets.ViewSet):
             custom_user = CustomUser.objects.get(pk=pk)
         except CustomUser.DoesNotExist:
             return Response({"error": "user not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = CustomUserSerializer(custom_user,data=request.data,partial=True)
+        serializer = CustomUserSerializer(custom_user,data=request.data)
         if serializer.is_valid():
+            custom_user = serializer.save(commit=False)
             custom_user = self._handle_file_upload(request,custom_user)
             custom_user.save()
             saved_serializer = CustomUserSerializer(custom_user)

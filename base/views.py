@@ -53,7 +53,7 @@ class CustomUserViewset(viewsets.ViewSet):
         try:
             custom_user = CustomUser.objects.get(pk=pk)
         except CustomUser.DoesNotExist:
-            return Response({"error": "Course material not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "user not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = CustomUserSerializer(custom_user,data=request.data,partial=True)
         if serializer.is_valid():
             custom_user = self._handle_file_upload(request,custom_user)
@@ -251,18 +251,24 @@ class CourseMaterialViewset(viewsets.ViewSet):
         serializer = CourseMaterialSerializer(user,many=False)
         return Response(serializer.data)
     
-    def create(self,request):
+    def create(self,request,*args,**kwargs):
         serializer = CourseMaterialSerializer(data=request.data,many=False)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
+            course_material = serializer.save(commit=False)
+            course_material = self._handle_file_upload(request,course_material)
+            course_material.save()
+            saved_serializer = CourseMaterialSerializer(course_material)
+            return Response(saved_serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def update(self,request,pk):
-        queryset = CourseMaterial.objects.all()
-        user = get_object_or_404(queryset,pk=pk)
-        serializer = CourseMaterialSerializer(user,data=request.data)
+        try:
+            course_material = CourseMaterial.objects.get(pk=pk)
+        except CourseMaterial.DoesNotExist:
+            return Response({"error": "Course material not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = CourseMaterialSerializer(course_material,data=request.data)
         if serializer.is_valid():
+            course_material = serializer.save(commit)
             serializer.save()
             return Response(serializer.data,status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

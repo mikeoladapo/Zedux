@@ -10,6 +10,24 @@ import cloudinary.uploader
 
 class CustomUserViewset(viewsets.ViewSet):
     permission_classes = [IsAdminUser]
+
+    def _handle_file_upload(self,request,custom_user=None):
+        if "profile_picture" in request.FILES :
+            profile_picture_result = cloudinary.uploader.upload(
+                request.FILES["profile_picture"],resource_type="image"
+            )
+            profile_picture_url = profile_picture_result.get('url')
+            custom_user.profile_picture = profile_picture_url
+        custom_user.first_name = request.data.get('first_name',custom_user.first_name)
+        custom_user.last_name = request.data.get('last_name',custom_user.last_name)
+        custom_user.username = request.data.get('username',custom_user.username)
+        custom_user.email = request.data.get('email',custom_user.email)
+        custom_user.bio = request.data.get('bio',custom_user.bio)
+        custom_user.role = request.data.get('bio',custom_user.role)
+        custom_user.is_active = request.data.get('is_active',custom_user.is_active)
+        custom_user.is_staff = request.data.get('is_staff',custom_user.is_staff)
+        return custom_user   
+    
     def list(self,request):
         queryset = CustomUser.objects.all()
         serializer = CustomUserSerializer(queryset,many=True)
@@ -22,37 +40,24 @@ class CustomUserViewset(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        profile_picture_url = None
-        if "profile_picture" in request.FILES :
-            profile_picture_result = cloudinary.uploader.upload(
-                request.FILES['profile_picture'], resource_type='image'
-            )
-            profile_picture_url = profile_picture_result.get('url')
-        user = CustomUser.objects.create(
-            first_name = request.data.get('first_name'),
-            last_name = request.data.get('last_name'),
-            username = request.data.get('username'),
-            email = request.data.get('email'),
-            bio = request.data.get('bio'),
-            email = request.data.get('email'),
-            email = request.data.get('email')
-
-        )
-        serializer = CustomUserSerializer(data=request.data,many=False)
+        custom_user = CustomUser()
+        custom_user = self._handle_file_upload(request,custom_user)
+        custom_user.save()
+        serializer = CustomUserSerializer(custom_user,many=False)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def update(self,request,pk):
-        queryset = CustomUser.objects.all()
-        user = get_object_or_404(queryset,pk=pk)
-        serializer = CustomUserSerializer(user,data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
+        try:
+            custom_user = CustomUser.objects.get(pk=pk)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "Course material not found"}, status=status.HTTP_404_NOT_FOUND)
+        custom_user = self._handle_file_upload(request,custom_user)
+        custom_user.save()
+        serializer = CustomUserSerializer(CustomUser)
+        return (serializer.data , status=status.HTTP_200_OK)
     def destroy(self,request,pk):
         queryset = CustomUser.objects.all()
         user = get_object_or_404(queryset,pk=pk)

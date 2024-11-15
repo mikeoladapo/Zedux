@@ -42,11 +42,11 @@ INSTALLED_APPS = [
     'base',
     'client',
     'rest_framework',
-    'djoser',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'cloudinary',
     'cloudinary_storage'
+    'drf-spectacular'
 ]
 
 MIDDLEWARE = [
@@ -138,18 +138,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#REST_FRAMEWORK = {
-   # 'DEFAULT_AUTHENTICATION_CLASSES': (
-  #      'rest_framework_simplejwt.authentication.JWTAuthentication',
- #   ),
-#}
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
-#SIMPLE_JWT = {
- #   'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
-  #  'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-   #'ROTATE_REFRESH_TOKENS': True,
-    #'BLACKLIST_AFTER_ROTATION': True,
-#}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+   'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
 
 DJOSER = {
     'SERIALIZERS': {
@@ -179,4 +179,12 @@ CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'dsbyygfwr',
     'API_KEY':'293646795868979',
     'API_SECRET': 'lchsKWBkJksnSSUtJpS4Gf3OBhM',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Zedux API',
+    'DESCRIPTION': 'an online learning platform api',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }

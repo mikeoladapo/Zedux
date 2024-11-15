@@ -14,7 +14,24 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  refresh:
+                    type: string
+                  access:
+                    type: string
+                  message:
+                    type: string
+                  api_base_url:
+                    type: string
+          description: Login successful, returns JWT tokens
+        '400':
+          description: 'Bad Request: Missing username or password'
+        '401':
+          description: 'Unauthorized: Invalid username or password'
   /api/auth/logout/:
     post:
       operationId: auth_logout_create
@@ -25,34 +42,68 @@ paths:
       - {}
       responses:
         '200':
-          description: No response body
+          description: Logout successful
+        '400':
+          description: 'Bad Request: Missing refresh token'
+        '401':
+          description: 'Unauthorized: Invalid or expired refresh token'
   /api/categories/:
     get:
-      operationId: categories_retrieve
+      operationId: categories_list
       tags:
       - categories
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+          description: List of categories
     post:
       operationId: categories_create
       tags:
       - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '201':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: Category created successfully
+        '400':
+          description: 'Bad Request: Invalid data'
   /api/categories/{id}/:
     get:
-      operationId: categories_retrieve_2
+      operationId: categories_retrieve
       parameters:
       - in: path
         name: id
         schema:
           type: string
+        required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Category ID
         required: true
       tags:
       - categories
@@ -60,7 +111,11 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: Retrieve category by ID
     put:
       operationId: categories_update
       parameters:
@@ -69,13 +124,39 @@ paths:
         schema:
           type: string
         required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Category ID
+        required: true
       tags:
       - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: Category updated successfully
+        '400':
+          description: 'Bad Request: Invalid data'
+        '404':
+          description: Category not found
     delete:
       operationId: categories_destroy
       parameters:
@@ -84,40 +165,78 @@ paths:
         schema:
           type: string
         required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Category ID
+        required: true
       tags:
       - categories
       security:
       - jwtAuth: []
       responses:
         '204':
-          description: No response body
+          description: Category deleted successfully
+        '404':
+          description: Category not found
   /api/course-materials/:
     get:
-      operationId: course_materials_retrieve
+      operationId: course_materials_list
       tags:
       - course-materials
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseMaterial'
+          description: List of course materials
     post:
       operationId: course_materials_create
       tags:
       - course-materials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseMaterialRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CourseMaterialRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CourseMaterialRequest'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '201':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseMaterial'
+          description: Course material created successfully
+        '400':
+          description: 'Bad Request: Invalid data'
   /api/course-materials/{id}/:
     get:
-      operationId: course_materials_retrieve_2
+      operationId: course_materials_retrieve
       parameters:
       - in: path
         name: id
         schema:
           type: string
+        required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Course Material ID
         required: true
       tags:
       - course-materials
@@ -125,7 +244,11 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseMaterial'
+          description: Retrieve course material by ID
     put:
       operationId: course_materials_update
       parameters:
@@ -134,13 +257,39 @@ paths:
         schema:
           type: string
         required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Course Material ID
+        required: true
       tags:
       - course-materials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseMaterialRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CourseMaterialRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CourseMaterialRequest'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseMaterial'
+          description: Course material updated successfully
+        '400':
+          description: 'Bad Request: Invalid data'
+        '404':
+          description: Course material not found
     delete:
       operationId: course_materials_destroy
       parameters:
@@ -149,40 +298,78 @@ paths:
         schema:
           type: string
         required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Course Material ID
+        required: true
       tags:
       - course-materials
       security:
       - jwtAuth: []
       responses:
         '204':
-          description: No response body
+          description: Course material deleted successfully
+        '404':
+          description: Course material not found
   /api/courses/:
     get:
-      operationId: courses_retrieve
+      operationId: courses_list
       tags:
       - courses
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+          description: List of courses
     post:
       operationId: courses_create
       tags:
       - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '201':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: Course created successfully
+        '400':
+          description: 'Bad Request: Invalid data'
   /api/courses/{id}/:
     get:
-      operationId: courses_retrieve_2
+      operationId: courses_retrieve
       parameters:
       - in: path
         name: id
         schema:
           type: string
+        required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Course ID
         required: true
       tags:
       - courses
@@ -190,7 +377,11 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: Retrieve course by ID
     put:
       operationId: courses_update
       parameters:
@@ -199,13 +390,39 @@ paths:
         schema:
           type: string
         required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Course ID
+        required: true
       tags:
       - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: Course updated successfully
+        '400':
+          description: 'Bad Request: Invalid data'
+        '404':
+          description: Course not found
     delete:
       operationId: courses_destroy
       parameters:
@@ -214,40 +431,78 @@ paths:
         schema:
           type: string
         required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Course ID
+        required: true
       tags:
       - courses
       security:
       - jwtAuth: []
       responses:
         '204':
-          description: No response body
+          description: Course deleted successfully
+        '404':
+          description: Course not found
   /api/instructors/:
     get:
-      operationId: instructors_retrieve
+      operationId: instructors_list
       tags:
       - instructors
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Instructor'
+          description: List of instructors
     post:
       operationId: instructors_create
       tags:
       - instructors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstructorRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstructorRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstructorRequest'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '201':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+          description: Instructor created successfully
+        '400':
+          description: 'Bad Request: Invalid data'
   /api/instructors/{id}/:
     get:
-      operationId: instructors_retrieve_2
+      operationId: instructors_retrieve
       parameters:
       - in: path
         name: id
         schema:
           type: string
+        required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Instructor ID
         required: true
       tags:
       - instructors
@@ -255,7 +510,11 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+          description: Retrieve instructor by ID
     put:
       operationId: instructors_update
       parameters:
@@ -264,13 +523,39 @@ paths:
         schema:
           type: string
         required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Instructor ID
+        required: true
       tags:
       - instructors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstructorRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstructorRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstructorRequest'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+          description: Instructor updated successfully
+        '400':
+          description: 'Bad Request: Invalid data'
+        '404':
+          description: Instructor not found
     delete:
       operationId: instructors_destroy
       parameters:
@@ -279,13 +564,21 @@ paths:
         schema:
           type: string
         required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: Instructor ID
+        required: true
       tags:
       - instructors
       security:
       - jwtAuth: []
       responses:
         '204':
-          description: No response body
+          description: Instructor deleted successfully
+        '404':
+          description: Instructor not found
   /api/instructors/become_an_instructor/:
     post:
       operationId: instructors_become_an_instructor_create
@@ -295,20 +588,34 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+          description: User successfully became an instructor
+        '400':
+          description: 'Bad Request: User is already an instructor'
   /api/my-cart/:
     get:
-      operationId: my_cart_retrieve
+      operationId: my_cart_list
+      description: List all items in the user's cart
       tags:
       - my-cart
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MyCart'
+          description: ''
   /api/my-cart/{id}/:
     get:
-      operationId: my_cart_retrieve_2
+      operationId: my_cart_retrieve
+      description: Retrieve a specific cart item by ID
       parameters:
       - in: path
         name: id
@@ -321,9 +628,14 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyCart'
+          description: ''
     delete:
       operationId: my_cart_destroy
+      description: Delete a specific cart item by ID
       parameters:
       - in: path
         name: id
@@ -335,11 +647,12 @@ paths:
       security:
       - jwtAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          description: Successfully deleted the cart item
   /api/my-cart/add/{course_id}/:
     post:
       operationId: my_cart_add_create
+      description: Add a course to the user's cart
       parameters:
       - in: path
         name: course_id
@@ -348,110 +661,51 @@ paths:
         required: true
       tags:
       - my-cart
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/my-cart/add_to_cart/:
-    post:
-      operationId: my_cart_add_to_cart_create
-      tags:
-      - my-cart
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/my-course/:
-    get:
-      operationId: my_course_retrieve
-      tags:
-      - my-course
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/my-course/{id}/:
-    get:
-      operationId: my_course_retrieve_2
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - my-course
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          description: No response body
-    delete:
-      operationId: my_course_destroy
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
-      tags:
-      - my-course
-      security:
-      - jwtAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/my-course/add/{course_id}/:
-    post:
-      operationId: my_course_add_create
-      parameters:
-      - in: path
-        name: course_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - my-course
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/my-course/add_to_my_course/:
-    post:
-      operationId: my_course_add_to_my_course_create
-      tags:
-      - my-course
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/users/:
-    get:
-      operationId: users_retrieve
-      tags:
-      - users
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          description: No response body
-    post:
-      operationId: users_create
-      tags:
-      - users
       security:
       - jwtAuth: []
       responses:
         '201':
-          description: No response body
-  /api/users/{id}/:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyCart'
+          description: ''
+  /api/my-cart/add_to_cart/:
+    post:
+      operationId: my_cart_add_to_cart_create
+      description: Add a course to the user's cart
+      tags:
+      - my-cart
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyCart'
+          description: ''
+  /api/my-course/:
     get:
-      operationId: users_retrieve_2
+      operationId: my_course_list
+      description: List all courses owned by the user
+      tags:
+      - my-course
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MyCourse'
+          description: ''
+  /api/my-course/{id}/:
+    get:
+      operationId: my_course_retrieve
+      description: Retrieve a specific course by ID
       parameters:
       - in: path
         name: id
@@ -459,12 +713,137 @@ paths:
           type: string
         required: true
       tags:
+      - my-course
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyCourse'
+          description: ''
+    delete:
+      operationId: my_course_destroy
+      description: Delete a specific course item by ID
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - my-course
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: Successfully deleted the course item
+  /api/my-course/add/{course_id}/:
+    post:
+      operationId: my_course_add_create
+      description: Add a course to the user's list of courses
+      parameters:
+      - in: path
+        name: course_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - my-course
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyCourse'
+          description: ''
+  /api/my-course/add_to_my_course/:
+    post:
+      operationId: my_course_add_to_my_course_create
+      description: Add a course to the user's list of courses
+      tags:
+      - my-course
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyCourse'
+          description: ''
+  /api/users/:
+    get:
+      operationId: users_list
+      tags:
       - users
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomUser'
+          description: List of users
+    post:
+      operationId: users_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomUserRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomUser'
+          description: User created successfully
+        '400':
+          description: 'Bad Request: Invalid data'
+  /api/users/{id}/:
+    get:
+      operationId: users_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: User ID
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomUser'
+          description: Retrieve user by ID
     put:
       operationId: users_update
       parameters:
@@ -473,13 +852,39 @@ paths:
         schema:
           type: string
         required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: User ID
+        required: true
       tags:
       - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomUserRequest'
+        required: true
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomUser'
+          description: User updated successfully
+        '400':
+          description: 'Bad Request: Invalid data'
+        '404':
+          description: User not found
     delete:
       operationId: users_destroy
       parameters:
@@ -488,14 +893,285 @@ paths:
         schema:
           type: string
         required: true
+      - in: query
+        name: pk
+        schema:
+          type: integer
+        description: User ID
+        required: true
       tags:
       - users
       security:
       - jwtAuth: []
       responses:
         '204':
-          description: No response body
+          description: User deleted successfully
+        '404':
+          description: User not found
 components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+      required:
+      - id
+      - name
+    CategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 200
+        category_name:
+          type: string
+          readOnly: true
+        duration:
+          type: string
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        course_material:
+          type: integer
+        instructor:
+          allOf:
+          - $ref: '#/components/schemas/Instructor'
+          readOnly: true
+      required:
+      - amount
+      - category_name
+      - course_material
+      - description
+      - duration
+      - id
+      - instructor
+      - name
+    CourseMaterial:
+      type: object
+      properties:
+        course_name:
+          type: string
+          maxLength: 100
+        instructor:
+          type: integer
+        video_file:
+          type: string
+          format: uri
+          readOnly: true
+        certificate:
+          type: string
+          format: uri
+          readOnly: true
+        other_file:
+          type: string
+          format: uri
+          readOnly: true
+        text_file:
+          type: string
+          nullable: true
+      required:
+      - certificate
+      - course_name
+      - instructor
+      - other_file
+      - video_file
+    CourseMaterialRequest:
+      type: object
+      properties:
+        course_name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        instructor:
+          type: integer
+        text_file:
+          type: string
+          nullable: true
+      required:
+      - course_name
+      - instructor
+    CourseRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          minLength: 1
+          maxLength: 200
+        duration:
+          type: string
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        course_material:
+          type: integer
+      required:
+      - amount
+      - course_material
+      - description
+      - duration
+      - name
+    CustomUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          pattern: ^[a-zA-Z0-9_@#]+$
+          maxLength: 20
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 100
+        last_name:
+          type: string
+          maxLength: 100
+        bio:
+          type: string
+          nullable: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        profile_picture:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+          readOnly: true
+        is_staff:
+          type: boolean
+          readOnly: true
+      required:
+      - email
+      - first_name
+      - id
+      - is_active
+      - is_staff
+      - last_name
+      - username
+    CustomUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          pattern: ^[a-zA-Z0-9_@#]+$
+          maxLength: 20
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        bio:
+          type: string
+          nullable: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        profile_picture:
+          type: string
+          minLength: 1
+          nullable: true
+      required:
+      - email
+      - first_name
+      - last_name
+      - username
+    Instructor:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        instructor_name:
+          type: string
+          readOnly: true
+        bio:
+          type: string
+          maxLength: 300
+      required:
+      - bio
+      - id
+      - instructor_name
+    InstructorRequest:
+      type: object
+      properties:
+        bio:
+          type: string
+          minLength: 1
+          maxLength: 300
+      required:
+      - bio
+    MyCart:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course_name:
+          type: string
+          readOnly: true
+      required:
+      - course_name
+      - id
+    MyCourse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course_name:
+          type: string
+          readOnly: true
+        bought_on:
+          type: string
+          format: date-time
+      required:
+      - bought_on
+      - course_name
+      - id
+    RoleEnum:
+      enum:
+      - student
+      - instructor
+      type: string
+      description: |-
+        * `student` - STUDENT
+        * `instructor` - INSTRUCTOR
   securitySchemes:
     jwtAuth:
       type: http

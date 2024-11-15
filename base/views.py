@@ -4,11 +4,34 @@ from rest_framework import status
 from .models import CustomUser,Instructor,Category,Course,CourseMaterial
 from .serializers import CustomUserSerializer ,InstructorSerializer,CategorySerializer,CourseSerializer,CourseMaterialSerializer
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated,IsAdminUser
+from rest_framework.permissions import IsAuthenticated,IsAdminUser,AllowAny
 from .permissions import IsInstructor,IsCourseOwner
 import cloudinary.uploader
 from rest_framework.decorators import action
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 
+
+class LoginViewset(viewsets.ViewSet):
+    permission_classes = [AllowAny]
+    @action(detail=False,methods=["post"])
+    def login(self,request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        if not username or not password:
+            return Response({"error": "Please provide both username and password."},status=status.HTTP_400_BAD_REQUEST)
+        user = authenticate(request,username=username,password=password)
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "refresh":str(refresh),
+                "access":"str(refresh.access_token)"
+            },status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"error": "Invalid username or password."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
 class CustomUserViewset(viewsets.ViewSet):
     permission_classes = [IsAdminUser]
 

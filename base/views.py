@@ -1,5 +1,6 @@
 from rest_framework.response import Response 
 from rest_framework.generics import get_object_or_404
+from rest_framework.filters import SearchFilter
 from rest_framework import status
 from .models import CustomUser,Instructor,Category,Course,CourseMaterial
 from .serializers import CustomUserSerializer ,InstructorSerializer,CategorySerializer,CourseSerializer,CourseMaterialSerializer
@@ -82,7 +83,8 @@ class LoginViewset(viewsets.ViewSet):
             )
 class CustomUserViewset(viewsets.ViewSet):
     permission_classes = [IsAdminUser]
-
+    filter_backends = [SearchFilter]  
+    search_fields = ['username', 'first_name','last_name']
     def _handle_file_upload(self, request, custom_user=None):
         if "profile_picture" in request.FILES:
             profile_picture_upload = cloudinary.uploader.upload(
@@ -186,6 +188,8 @@ class CustomUserViewset(viewsets.ViewSet):
 
 
 class InstructorViewset(viewsets.ViewSet):
+    filter_backends = [SearchFilter]  
+    search_fields = ['instructor__username', 'instructor__last_name','instructor__first_name']
     def get_permissions(self):
         if self.action == "create":
             permission_classes = [IsAdminUser]
@@ -380,6 +384,8 @@ class CategoryViewset(viewsets.ViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 class CourseViewset(viewsets.ViewSet):
+    filter_backends = [SearchFilter]  
+    search_fields = ['name', 'instructor']
     def get_permissions(self):
         if self.action == "create":
             permission_classes = [IsAuthenticated, IsAdminUser | IsInstructor]

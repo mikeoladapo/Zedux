@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from base.models import Course
 from .models import MyCart,MyCourse
+from rest_framework.filters import SearchFilter
 from .serializers import MyCartSerializer,MyCourseSerializer,MyProfileSerializer
 from django.utils import timezone 
 from base.models import CustomUser
@@ -15,7 +16,8 @@ from drf_spectacular.types import OpenApiTypes
 
 class MyCartViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsMyCart]
-
+    filter_backends = [SearchFilter]  
+    search_fields = ['name', 'instructor']
     @extend_schema(
         responses={200: MyCartSerializer(many=True)},
         description="List all items in the user's cart"
@@ -69,7 +71,8 @@ class MyCartViewSet(viewsets.ViewSet):
 
 class MyCourseViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsMyOwner]
-
+    filter_backends = [SearchFilter]  
+    search_fields = ['name', 'instructor']
     @extend_schema(
         responses={200: MyCourseSerializer(many=True)},
         description="List all courses owned by the user"

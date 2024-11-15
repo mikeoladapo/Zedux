@@ -23,10 +23,15 @@ class LoginViewset(viewsets.ViewSet):
         user = authenticate(request,username=username,password=password)
         if user is not None:
             refresh = RefreshToken.for_user(user)
-            return Response({
-                "refresh":str(refresh),
-                "access":"str(refresh.access_token)"
-            },status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                    "message": "Login successful. Use the API base URL to start interacting with the API.",
+                    "api_base_url": "http://127.0.0.1:8000/api/"
+                },
+                status=status.HTTP_200_OK,
+            )
         else:
             return Response(
                 {"error": "Invalid username or password."},
@@ -44,11 +49,10 @@ class LoginViewset(viewsets.ViewSet):
         except:
             return Response(
                 {"error": "Invalid or expired token."},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=status.HTTP_400_BAD_REQUEST
             )
 class CustomUserViewset(viewsets.ViewSet):
     permission_classes = [IsAdminUser]
-
     def _handle_file_upload(self,request,custom_user=None):
         if "profile_picture" in request.FILES :
             profile_picture_upload = cloudinary.uploader.upload(

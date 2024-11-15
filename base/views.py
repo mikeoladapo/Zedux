@@ -32,6 +32,20 @@ class LoginViewset(viewsets.ViewSet):
                 {"error": "Invalid username or password."},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+    @action(detail=False,methods=["post"])
+    def logout(self,request):
+        refresh_token = request.data.get("refresh")
+        if not refresh_token :
+            return Response({"error": "Refresh token is required for logout."},status=status.HTTP_400_BAD_REQUEST)
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
+        except:
+            return Response(
+                {"error": "Invalid or expired token."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 class CustomUserViewset(viewsets.ViewSet):
     permission_classes = [IsAdminUser]
 

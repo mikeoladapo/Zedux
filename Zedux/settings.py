@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-12345abcdef')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://zedux-1.onrender.com', 'localhost']
+ALLOWED_HOSTS =['*']#['https://zedux-1.onrender.com', 'localhost']
 
 AUTH_USER_MODEL = 'base.CustomUser'
 

@@ -7,3 +7,5 @@ cloudinary==1.41.0
 django-cloudinary-storage==0.3.0 
 gunicorn==23.0.0
 python-decouple
+dj-database-url
+drf_spectacular

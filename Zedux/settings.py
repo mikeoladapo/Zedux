@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
+from decouple import config
 from pathlib import Path
 from datetime import timedelta
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,8 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0bg@wh*-=bii-*vjqg5&n@4tcg6zohqrsm%kv7c+859bs0^drw'
-
+SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -83,14 +84,7 @@ WSGI_APPLICATION = 'Zedux.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Zedux',
-        'USER': 'postgres',
-        'PASSWORD': 'Newmanleo2004',
-        'HOST': 'localhost',  # Or IP address of the PostgreSQL server
-        'PORT': '5432',       # Default PostgreSQL port
-    }
+    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
 
@@ -153,14 +147,6 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-DJOSER = {
-    'SERIALIZERS': {
-        'user': 'base.serializers.CustomUserSerializer',         
-        'current_user': 'base.serializers.CustomUserSerializer',
-    },
-    'USER_CREATE_PASSWORD_RETYPE': True,
-}
-USERNAME_RESET_CONFIRM_URL = "/auth/users/confirm_reset_username/" 
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -178,11 +164,11 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Cloudinary configuration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dsbyygfwr',
-    'API_KEY':'293646795868979',
-    'API_SECRET': 'lchsKWBkJksnSSUtJpS4Gf3OBhM',
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'CLOUD_NAME': config('CLOUD_NAME'),
+    'API_KEY': config('API_KEY'),
+    'API_SECRET': config('API_SECRET'),
 }
+
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Zedux API',

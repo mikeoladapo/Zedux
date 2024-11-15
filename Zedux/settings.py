@@ -14,6 +14,7 @@ from decouple import config
 from pathlib import Path
 from datetime import timedelta
 import dj_database_url
+import uuid
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -163,10 +164,10 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # The default from email for your applicat
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Cloudinary configuration
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUD_NAME'),
-    'API_KEY': config('API_KEY'),
-    'API_SECRET': config('API_SECRET'),
+CLOUDINARY = {
+    'CLOUD_NAME': config('CLOUD_NAME', default=f'cloud-{uuid.uuid4().hex[:8]}'),
+    'API_KEY': config('API_KEY', default=f'key-{uuid.uuid4().hex[:12]}'),
+    'API_SECRET': config('API_SECRET', default=f'secret-{uuid.uuid4().hex[:16]}'),
 }
 
 

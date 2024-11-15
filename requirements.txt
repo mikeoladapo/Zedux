@@ -4,5 +4,5 @@ Pillow==9.3.0
 djangorestframework-simplejwt==5.2.2
 psycopg2-binary==2.9.10
 cloudinary==1.41.0
-djanjo-cloudinary-storage==0.3.0 
+django-cloudinary-storage==0.3.0 
 drf_spectacular

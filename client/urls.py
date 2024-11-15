@@ -4,10 +4,10 @@ from django.urls import path ,include
 
 router = DefaultRouter()
 router.register(r'my-cart',MyCartViewSet,basename='my-cart')
-router.register(r'my-courses',MyCourseViewSet,basename='my-courses')
+router.register(r'my-course',MyCourseViewSet,basename='my-course')
 
 custom_urls = [
-    path('my-courses/add/<int:course_id>/', MyCourseViewSet.as_view({'post': 'add_to_my_courses'}), name='add-to-my-courses'),
+    path('my-course/add/<int:course_id>/', MyCourseViewSet.as_view({'post': 'add_to_my_course'}), name='add-to-my-course'),
     path('my-cart/add/<int:course_id>/', MyCartViewSet.as_view({'post': 'add_to_cart'}), name='add-to-cart'),
 ]
 urlpatterns = [

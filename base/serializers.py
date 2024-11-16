@@ -43,7 +43,7 @@ class CourseMaterialSerializer(serializers.ModelSerializer):
     other_file = serializers.URLField(source='other_file.url', read_only=True)
     class Meta:
         model = CourseMaterial
-        fields = ['course_name', 'instructor', 'video_file', 'certificate', 'other_file', 'text_file']
+        fields = ['id','course_name', 'instructor', 'video_file', 'certificate', 'other_file', 'text_file']
 
 
 

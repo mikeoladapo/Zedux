@@ -29,7 +29,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instructor
-        fields = ['id','instructor_name', 'bio']
+        fields = ['instructor_name', 'bio']
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

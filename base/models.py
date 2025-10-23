@@ -112,4 +112,4 @@ class Course(models.Model):
         return self.instructor.username
     
     def __str__(self):
-        return self.nam
+        return self.name

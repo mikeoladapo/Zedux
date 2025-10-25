@@ -6,4 +6,4 @@ class IsInstructor(BasePermission):
     
 class IsCourseOwner(BasePermission):
     def has_permission(self, request, view,obj):
-        return request.user == obj.instructor.use
+        return request.user == obj.instructor.user
